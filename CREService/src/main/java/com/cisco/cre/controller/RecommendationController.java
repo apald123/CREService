@@ -1,9 +1,7 @@
 package com.cisco.cre.controller;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
