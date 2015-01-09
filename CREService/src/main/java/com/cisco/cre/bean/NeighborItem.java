@@ -24,8 +24,8 @@ public class NeighborItem extends GenericItem {
 		public Date getItemEOLDate() {
 			return itemEOLDate;
 		}
-		public void setItemEOLDate(Date lastCopurchasedOn) {
-			this.itemEOLDate = lastCopurchasedOn;
+		public void setItemEOLDate(Date itemEOLDate) {
+			this.itemEOLDate = itemEOLDate;
 		}
 		
 		@Override

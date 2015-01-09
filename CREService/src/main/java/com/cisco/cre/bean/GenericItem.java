@@ -29,7 +29,7 @@ public class GenericItem {
 	public String getItemType() {
 		return itemType;
 	}
-	public void getItemType(String type) {
+	public void setItemType(String type) {
 		this.itemType = type;
 	}
 

@@ -12,12 +12,9 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.cisco.cre.bean.My;
 import com.cisco.cre.dao.ElasticsearchDAO;
 import com.cisco.cre.ds.ElasticsearchDS;
 import com.cisco.cre.util.LogUtil;
@@ -37,14 +34,17 @@ public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 	 * Returns the search response given a type and filter
 	 */
 	@Override
-	public <T> List<T> getListByIdsFilter(String type, String[] ids, Class<T> objClass) 
+	public <T> List<T> getListByIdsFilter(String type, List<String> idList, Class<T> objClass) 
 			throws Exception {
 
+		Client client = null;
 		LogUtil.debug(this, "--------------------- BEGIN ----------------------");
 		try {
 			
-			Client client = elasticsearchDS.getClient();
+			client = elasticsearchDS.getClient();
 			
+			String[] ids = new String[idList.size()];
+			ids = idList.toArray(ids);
 			FilterBuilder filter = FilterBuilders.idsFilter().addIds(ids);
 			SearchRequestBuilder request = client.prepareSearch(elasticsearchDS.getIndex())
 					.setPostFilter(filter);
@@ -97,9 +97,10 @@ public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 			return itemList;
 
 		} catch(Exception ex) {
+			
 			throw ex;
-		}
-
+			
+		} 
 	}
 
 	@Override

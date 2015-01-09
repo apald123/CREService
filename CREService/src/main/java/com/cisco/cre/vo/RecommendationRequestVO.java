@@ -24,8 +24,8 @@ public class RecommendationRequestVO {
 	String coOccuranceFlag;
 	String similarityFlag;
 	String featuredFlag;
-	//List<String> items;
-	String[] items;
+	List<String> items;
+	//String[] items;
 	
 	public RecommendationRequestVO() {
 		
@@ -61,20 +61,31 @@ public class RecommendationRequestVO {
 	public void setFeaturedFlag(String featuredFlag) {
 		this.featuredFlag = featuredFlag;
 	}
+	/*
 	public String[] getItems() {
 		return items;
 	}
 	public void setItems(String[] items) {
 		this.items = items;
 	}
+	*/
+	public List<String> getItems() {
+		return items;
+	}
+
+	public void setItems(List<String> items) {
+		this.items = items;
+	}
+		
+	
 
 	@Override
 	public String toString() {
-		return "RecommendationRequest [userId=" + userId + ", custSegment="
+		return "RecommendationRequestVO [userId=" + userId + ", custSegment="
 				+ custSegment + ", coOccuranceFlag=" + coOccuranceFlag
 				+ ", similarityFlag=" + similarityFlag + ", featuredFlag="
 				+ featuredFlag + ", items=" + items + "]";
 	}
-		
+
 	
 }

@@ -35,7 +35,7 @@ public class RecommendationDAOImpl implements RecommendationDAO {
 			esType = "unknown";
 		}
 			
-		List<Item> itemList = elasticsearchDAO.getListByIdsFilter(rcmdReq.getCustSegment(), rcmdReq.getItems(), 
+		List<Item> itemList = elasticsearchDAO.getListByIdsFilter(esType, rcmdReq.getItems(), 
 				Item.class);
 				
 		//LogUtil.info(this, "ItemList="+itemList.toString());

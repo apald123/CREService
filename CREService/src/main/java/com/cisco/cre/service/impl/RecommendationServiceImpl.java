@@ -1,7 +1,9 @@
 package com.cisco.cre.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,10 @@ public class RecommendationServiceImpl implements RecommendationService {
 		//LogUtil.print(this, "------------ BEGIN RecommendationServiceImpl.getRecommendations()-----------");
 			
 		List<Item> itemList = recommendationDAO.getRecommendationItemList(rcmdReq);
-
+		
+		// create a set for comparisons purpose
+		Set<String> cartItemSet = new HashSet<String>(rcmdReq.getItems());
+		
 		List<NeighborItem> coOccList = new ArrayList<NeighborItem>();
 		if (rcmdReq.getCoOccuranceFlag().equals("Y")) {
 			
@@ -46,7 +51,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 					coOccList.addAll(item.getCoOccurances());
 			}	
 			
-			//rcmdRulesService.filterRecommendations(coOccList);
+			// apply rules to reduce the noise
+			coOccList = rcmdRulesService.filterRecommendations(cartItemSet, coOccList);
 		}
 
 		List<NeighborItem> simlrList = new ArrayList<NeighborItem>();
@@ -57,7 +63,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 				if (item.getSimilarities() != null)
 					simlrList.addAll(item.getSimilarities());
 			}
-			
+
+			// apply rules
 			//rcmdRulesService.filterRecommendations(simlrList);
 		}
 
