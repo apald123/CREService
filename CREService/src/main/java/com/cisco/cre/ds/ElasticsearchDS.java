@@ -1,10 +1,17 @@
 package com.cisco.cre.ds;
 
+import javax.annotation.PostConstruct;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.cisco.cre.config.CREAppConfig;
+import com.cisco.cre.util.LogUtil;
 
 @Component
 public class ElasticsearchDS {
@@ -21,9 +28,19 @@ public class ElasticsearchDS {
 
 	
 	public ElasticsearchDS() {
-		
 	}
 
+	@PostConstruct
+	public void postInit() {
+		
+		LogUtil.debug(this, toString());
+		
+		// create the TransportClient
+		LogUtil.debug(this, "****** Connecting to Elasticsearch (TransportClient) ***********");
+		getClient();
+		LogUtil.debug(this, "****** Connected to Elasticsearch ***********");
+	}
+		
 	public String getIndex() {
 		return index;
 	}
@@ -43,7 +60,31 @@ public class ElasticsearchDS {
 	public Client getClient() {
 		
 		if (client == null) {
-			connectESTransport();
+		
+			try {
+                Settings settings = ImmutableSettings.settingsBuilder()
+                               //.put("cluster.name", paramData.get("ELASTIC_CLUSTER_NAME"))
+                               .put("network.server", false).put("node.client", true)
+                               .put("client.transport.sniff", false)
+                               .put("transport.connections_per_node.low", 16)
+                               .put("transport.connections_per_node.medium", 32)
+                               .put("transport.connections_per_node.high", 1).build();
+
+                TransportClient tpClient = new TransportClient(settings);
+                tpClient.addTransportAddress(new InetSocketTransportAddress(host, 9300));
+                /*
+                Set<String> keys = paramData.keySet();
+                for (String key : keys) {
+                           if (key.contains("ELASTIC_NODE")) {
+                               client.addTransportAddress(new InetSocketTransportAddress(
+                                              paramData.get(key), 9300));
+                           }
+                }
+                */
+                client = tpClient;
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
 		}
 		return client;
 	}
@@ -52,7 +93,7 @@ public class ElasticsearchDS {
 		this.client = client;
 	}
 
-	private void connectESTransport() {
+	private void connectESTransport() {		
 		client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, 9300))
 				.addTransportAddress(new InetSocketTransportAddress(host, 9301))
 				.addTransportAddress(new InetSocketTransportAddress(host, 9302));

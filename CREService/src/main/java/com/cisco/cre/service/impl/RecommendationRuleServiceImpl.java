@@ -26,7 +26,7 @@ public class RecommendationRuleServiceImpl implements
 		for (NeighborItem item : nbrItemList) {
 			
 			// only GOODS are recommended
-			if (!item.getProductType().equals("GOODS")) {
+			if (!item.getItemType().equals("MAINT")) {
 				continue;
 			}
 			
