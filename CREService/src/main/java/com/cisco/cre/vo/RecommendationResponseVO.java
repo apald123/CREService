@@ -1,34 +1,54 @@
 package com.cisco.cre.vo;
 
-import java.util.List;
+import java.util.Set;
+
+import com.cisco.cre.bean.NeighborItem;
 
 public class RecommendationResponseVO {
 
-	List coOccuranceList;
-	List similarityList;
-	List featuredList;
+	private Set<NeighborItem> coOccuranceSet;
+	private Set<NeighborItem> similaritySet;
+	private Set<NeighborItem> featuredSet;
 	
 	public RecommendationResponseVO() {
 		
 	}
-	
-	public List getCoOccuranceList() {
-		return coOccuranceList;
+
+	public Set<NeighborItem> getCoOccuranceSet() {
+		return coOccuranceSet;
 	}
-	public void setCoOccuranceList(List coOccuranceList) {
-		this.coOccuranceList = coOccuranceList;
+
+
+	public void setCoOccuranceSet(Set<NeighborItem> coOccuranceSet) {
+		this.coOccuranceSet = coOccuranceSet;
 	}
-	public List getSimilarityList() {
-		return similarityList;
+
+
+	public Set<NeighborItem> getSimilaritySet() {
+		return similaritySet;
 	}
-	public void setSimilarityList(List similarityList) {
-		this.similarityList = similarityList;
+
+
+	public void setSimilaritySet(Set<NeighborItem> similaritySet) {
+		this.similaritySet = similaritySet;
 	}
-	public List getFeaturedList() {
-		return featuredList;
+
+
+	public Set<NeighborItem> getFeaturedSet() {
+		return featuredSet;
 	}
-	public void setFeaturedList(List featuredList) {
-		this.featuredList = featuredList;
+
+
+	public void setFeaturedSet(Set<NeighborItem> featuredSet) {
+		this.featuredSet = featuredSet;
+	}
+
+
+	@Override
+	public String toString() {
+		return "RecommendationResponseVO [coOccuranceSet=" + coOccuranceSet
+				+ ", similaritySet=" + similaritySet + ", featuredSet="
+				+ featuredSet + "]";
 	}
 	
 	

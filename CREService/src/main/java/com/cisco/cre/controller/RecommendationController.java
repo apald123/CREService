@@ -3,6 +3,9 @@ package com.cisco.cre.controller;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.elasticsearch.common.netty.util.DebugUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -28,6 +31,8 @@ import dw.spring3.rest.util.AtomUtil;
 @Controller
 public class RecommendationController {
 	
+	private static Logger log = LoggerFactory.getLogger(RecommendationController.class);
+	
 	private RecommendationService rcmdService;
 
 	@Autowired
@@ -39,7 +44,8 @@ public class RecommendationController {
 	public @ResponseBody RecommendationResponseVO getRecommendations(@RequestBody RecommendationRequestVO recoReq) 
 			throws Exception {
 		
-		LogUtil.debug(this, "RecommendationRequest="+recoReq.toString());
+		log.info("RecommendationRequest="+recoReq.toString());
+		LogUtil.info(this, "RecommendationRequest="+recoReq.toString());
 		
 		RecommendationResponseVO recoResp = rcmdService.getRecommendations(recoReq);
 		
@@ -47,15 +53,17 @@ public class RecommendationController {
 		 * rcmdRulesService.executeRules(recoResp);
 		 */
 		
-		LogUtil.debug(this, "Recommendation Response="+recoResp.toString());
+		log.info("Recommendation Response="+recoResp.toString());
+		LogUtil.info(this, "Recommendation Response="+recoResp.toString());
 		return recoResp;
 	}
 
 	@RequestMapping(value="/recommendations1", method=RequestMethod.POST)
-	public @ResponseBody RecommendationResponseVO getRecommendations(@RequestBody String recoReqStr) 
+	public @ResponseBody String getRecommendations(@RequestBody String recoReqStr) 
 			throws JsonParseException, JsonMappingException, IOException, Exception {
 		
-		LogUtil.debug(this, "RecommendationRequest="+recoReqStr);
+		log.info("RecommendationRequest="+recoReqStr);
+		LogUtil.info(this, "RecommendationRequest="+recoReqStr);
 
         //convert json string to object
         ObjectMapper objectMapper = new ObjectMapper();     
@@ -67,9 +75,10 @@ public class RecommendationController {
         RecommendationResponseVO recoResp = rcmdService.getRecommendations(recoReq);
         objectMapper.writeValue(recoRespStr, recoResp);
         		
-        LogUtil.debug(this, "Recommendation Response="+recoRespStr.toString());
+        log.info("Recommendation Response="+recoRespStr.toString());
+		LogUtil.info(this, "Recommendation Response="+recoRespStr.toString());
 
-		return recoResp;
+		return recoRespStr.toString();
 	}
 	
 	@RequestMapping(value = "/recommendations2", method = {RequestMethod.GET, RequestMethod.POST})
@@ -190,3 +199,4 @@ public @ResponseBody EmployeeList getAllEmp() {
 }
 
 */
+

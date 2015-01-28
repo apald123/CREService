@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.cisco.cre.bean.Item;
+import com.cisco.cre.bean.IndexItem;
 import com.cisco.cre.dao.ElasticsearchDAO;
 import com.cisco.cre.dao.RecommendationDAO;
 import com.cisco.cre.util.LogUtil;
@@ -23,7 +23,7 @@ public class RecommendationDAOImpl implements RecommendationDAO {
 	}
 
 	@Override
-	public List<Item>  getRecommendationItemList(RecommendationRequestVO rcmdReq) throws Exception {
+	public List<IndexItem>  getRecommendationItemList(RecommendationRequestVO rcmdReq) throws Exception {
 		
 		//LogUtil.debug(this, "------------ BEGIN ElasticsearchServiceImpl.getCoOccuranceList()-----------");
 		
@@ -35,10 +35,10 @@ public class RecommendationDAOImpl implements RecommendationDAO {
 			esType = "unknown";
 		}
 			
-		List<Item> itemList = elasticsearchDAO.getListByIdsFilter(esType, rcmdReq.getItems(), 
-				Item.class);
+		List<IndexItem> itemList = elasticsearchDAO.getListByIdsFilter(esType, rcmdReq.getItems(), 
+				IndexItem.class);
 				
-		//LogUtil.info(this, "ItemList="+itemList.toString());
+		LogUtil.info(this, "ItemList="+itemList.toString());
 		//LogUtil.debug(this, "------------ END ElasticsearchServiceImpl.getCoOccuranceList()-----------");
 		
 	

@@ -20,6 +20,7 @@ import com.cisco.cre.ds.ElasticsearchDS;
 import com.cisco.cre.util.LogUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @Repository("elasticsearchDAO")
 public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 	
@@ -77,6 +78,7 @@ public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 				//Map<String,Object> result = hit.getSource();
 				
 				String result = hit.getSourceAsString();
+				LogUtil.debug(this, result);
 
 				//LogUtil.debug(this, result);		
 				
@@ -84,6 +86,8 @@ public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 		        ObjectMapper objectMapper = new ObjectMapper();   
 		        //final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 		        //objectMapper.setDateFormat(df);
+		        //objectMapper.setSerializationInclusion(Include.NON_NULL); 
+		        //objectMapper.setSerializationInclusion(Include.NON_EMPTY);
 		        
 		        T item = objectMapper.readValue(result, objClass);
 
@@ -150,24 +154,152 @@ public class ElasticsearchDAOImpl implements ElasticsearchDAO {
 
 /*
 {
-"name": "ASA-5000",
-"description" : "ASA 5500 Adaptive Security Appliance",
-"type": "Security Appliance",
-"neighbors": [
-    {
-        "name": "IPS6000",
-        "description" : "Intrusion Prevention",
-        "type": "Software",
-        "score": 0.85,
-        "last_copurchased_on": "01-Nov-2014"
-    },
-    {
-        "name": "CSM4",
-        "description": "Cisco Security Manager",
-        "type": "Software",
-        "score": 0.65,
-        "last_copurchased_on": "01-Nov-2014"
-    }
-]
+            "_index": "items",
+            "_type": "com",
+            "_id": "UCSC-C240-M3S2",
+            "_score": 1,
+            "_source": {
+               "name": "UCSC-C240-M3S2",
+               "description": "UCS FLEXPOD EXPRESS",
+               "itemType": "BUNDLE",
+               "productType": "MULTIPROD",
+               "productFamily": "UCSX",
+               "_AlsoBought": [
+                  {
+                     "productFamily": "PF1",
+                     "itemSet": [
+                        {
+                           "name": "CON-OSP-UCS3048F",
+                           "description": "ONSITE 24X7X4 Nexus 3048 for UCS Smart Play",
+                           "itemType": "MAINT",
+                           "productType": "GOODS",
+                           "productFamily": "PF1",
+                           "itemEOLDate": "2013/1/1",
+                           "score": 1
+                        },
+                        {
+                           "name": "Test Item 1",
+                           "description": "Service Item - skip",
+                           "itemType": "MAINT",
+                           "productType": "SERVICE",
+                           "productFamily": "PF1",
+                           "itemEOLDate": "2013/10/1",
+                           "score": 1
+                        }
+                     ]
+                  },
+                  {
+                     "productFamily": "PF2",
+                     "itemSet": [
+                        {
+                           "name": "Test Item 2",
+                           "description": "EOL Item - skip",
+                           "itemType": "MAINT",
+                           "productType": "GOODS",
+                           "productFamily": "PF2",
+                           "itemEOLDate": "2013/10/1",
+                           "score": 1
+                        },
+                        {
+                           "name": "Test Item 3",
+                           "description": "Score < 60% - skip",
+                           "itemType": "MAINT",
+                           "productType": "GOODS",
+                           "productFamily": "PF2",
+                           "itemEOLDate": "2013/10/1",
+                           "score": 0.3
+                        },
+                        {
+                           "name": "Test Item 4",
+                           "description": "Fetch",
+                           "itemType": "MAINT",
+                           "productType": "GOODS",
+                           "productFamily": "PF2",
+                           "itemEOLDate": "2013/10/1",
+                           "score": 0.65
+                        },
+                        {
+                           "name": "Test Item 5",
+                           "description": "Fetch",
+                           "itemType": "MAINT",
+                           "productType": "GOODS",
+                           "productFamily": "PF2",
+                           "itemEOLDate": "2013/10/1",
+                           "score": 0.8
+                        }
+                     ]
+                  }
+               ],
+               "similarities": []
+            }
+         } 
+ 
+ 
+ 
+POST /items/com/UCSC-C240-M3S2
+{    
+        "name": "UCSC-C240-M3S2",
+        "description" : "UCS FLEXPOD EXPRESS",
+        "itemType": "BUNDLE",
+        "productType":"MULTIPROD",
+        "productFamily":"UCSX",
+        "_AlsoBought": [
+            {    
+                "name": "CON-OSP-UCS3048F",
+                "description" : "ONSITE 24X7X4 Nexus 3048 for UCS Smart Play",
+                "itemType": "MAINT",
+                "productType": "GOODS",
+                "productFamily": "SERVICE",
+                "itemEOLDate" : "2013/1/1",
+                "score": 1.0
+            },
+		{	
+		    "name": "Test Item 1",
+		    "description" : "Service Item - skip",
+		    "itemType": "MAINT",
+		    "productType": "SERVICE",
+		    "productFamily": "PF1",
+		    "itemEOLDate" : "2013/10/1",
+		    "score": 1.0
+		},
+		{	
+		    "name": "Test Item 2",
+		    "description" : "EOL Item - skip",
+		    "itemType": "MAINT",
+		    "productType": "GOODS",
+		    "productFamily": "PF2",
+		    "itemEOLDate" : "2013/10/1",
+		    "score": 1.0
+		},
+		{	
+		    "name": "Test Item 3",
+		    "description" : "Score < 60% - skip",
+		    "itemType": "MAINT",
+		    "productType": "GOODS",
+		    "productFamily": "PF3",
+		    "itemEOLDate" : "2013/10/1",
+		    "score": 0.3
+		},
+		{	
+		    "name": "Test Item 4",
+		    "description" : "Fetch",
+		    "itemType": "MAINT",
+		    "productType": "GOODS",
+		    "productFamily": "PF4",
+		    "itemEOLDate" : "2013/10/1",
+		    "score": 0.65
+		},
+		{	
+		    "name": "Test Item 5",
+		    "description" : "Fetch",
+		    "itemType": "MAINT",
+		    "productType": "GOODS",
+		    "productFamily": "PF5",
+		    "itemEOLDate" : "2013/10/1",
+		    "score": 0.8
+		}
+        ],	
+        "similarities": [
+        ]	
 }
 */

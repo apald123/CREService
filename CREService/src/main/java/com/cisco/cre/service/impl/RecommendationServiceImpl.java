@@ -1,6 +1,5 @@
 package com.cisco.cre.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cisco.cre.bean.Item;
+import com.cisco.cre.bean.IndexItem;
 import com.cisco.cre.bean.NeighborItem;
 import com.cisco.cre.dao.RecommendationDAO;
 import com.cisco.cre.service.RecommendationRulesService;
@@ -37,31 +36,31 @@ public class RecommendationServiceImpl implements RecommendationService {
 		
 		//LogUtil.print(this, "------------ BEGIN RecommendationServiceImpl.getRecommendations()-----------");
 			
-		List<Item> itemList = recommendationDAO.getRecommendationItemList(rcmdReq);
+		List<IndexItem> itemList = recommendationDAO.getRecommendationItemList(rcmdReq);
 		
 		// create a set for comparisons purpose
 		Set<String> cartItemSet = new HashSet<String>(rcmdReq.getItems());
 		
-		List<NeighborItem> coOccList = new ArrayList<NeighborItem>();
+		Set<NeighborItem> coOccSet = new HashSet<NeighborItem>();
 		if (rcmdReq.getCoOccuranceFlag().equals("Y")) {
 			
 			// extract the co-occurrences from the Item
-			for (Item item : itemList) {
+			for (IndexItem item : itemList) {
 				if (item.getCoOccurances() != null)
-					coOccList.addAll(item.getCoOccurances());
+					coOccSet.addAll(item.getCoOccurances());
 			}	
 			
 			// apply rules to reduce the noise
-			coOccList = rcmdRulesService.filterRecommendations(cartItemSet, coOccList);
+			coOccSet = rcmdRulesService.filterRecommendations(cartItemSet, coOccSet);
 		}
 
-		List<NeighborItem> simlrList = new ArrayList<NeighborItem>();
+		Set<NeighborItem> simlrSet = new HashSet<NeighborItem>();
 		if (rcmdReq.getSimilarityFlag().equals("Y")) {
 
 			// extract the similarities from the Item
-			for (Item item : itemList) {
+			for (IndexItem item : itemList) {
 				if (item.getSimilarities() != null)
-					simlrList.addAll(item.getSimilarities());
+					simlrSet.addAll(item.getSimilarities());
 			}
 
 			// apply rules
@@ -70,9 +69,12 @@ public class RecommendationServiceImpl implements RecommendationService {
 
 		// build the response object
 		RecommendationResponseVO rcmdResp = new RecommendationResponseVO();
-		rcmdResp.setCoOccuranceList(coOccList);
-		rcmdResp.setSimilarityList(simlrList);
+		rcmdResp.setCoOccuranceSet(coOccSet);
+		rcmdResp.setSimilaritySet(simlrSet);
 		
+		if (rcmdReq.getFeaturedFlag().equals("Y")) {
+			//featuredItemsService.
+		}
 		//LogUtil.print(this, "------------ END RecommendationServiceImpl.getRecommendations()-----------");
 		
 		return rcmdResp; 
