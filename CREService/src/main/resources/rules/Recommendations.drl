@@ -1,0 +1,70 @@
+package com.cisco.recommendations.rules
+
+import com.cisco.cre.bean.NeighborItem;
+import com.cisco.cre.drools.facts.RecommendationFact;
+import com.cisco.cre.util.LogUtil;
+
+global java.util.Set filteredSet;
+
+/***** Filter Neighbor Item if already exist in Cart Item *****/ 
+
+rule "Filter Neighbor Item - Cart Item"
+    salience 5 
+when
+	RecommendationFact ($cartItemSet : cartItemSet)
+	RecommendationFact ($neighborItem : neighborItem)
+	NeighborItem ($cartItemSet != null && 
+		$neighborItem != null &&  
+		$cartItemSet contains $neighborItem.partNumber)  from $neighborItem
+then
+	filteredSet.remove($neighborItem);
+    LogUtil.debug(new Object(), "********** Rule Fired : Filter Neighbor Item - Cart Item: " + $neighborItem.getPartNumber());
+    drools.halt();
+end
+
+/***** Filter Neighbor Item if the also bought score is less than 0.3 *****/
+/*
+rule "Filter Neighbor Item - Low Score"
+    salience 10
+when
+    RecommendationFact ($neighborItem : neighborItem)
+    NeighborItem ($neighborItem.score != null &&
+    	$neighborItem.score < 0.3 )  from $neighborItem       
+then
+	filteredSet.remove($neighborItem);
+    LogUtil.debug(new Object(), "********** Rule Fired : Filter Neighbor Item - Low Score: Item=" + 
+    	$neighborItem.getPartNumber()+" Score="+ $neighborItem.getScore());
+    drools.halt();
+end
+*/
+/***** Filter Neighbor Item if it is a Service SKU *****/
+/*
+rule "Filter Neighbor Item - Service SKU"
+    salience 15
+when
+	RecommendationFact ($neighborItem : neighborItem)
+	NeighborItem ($neighborItem.serviceSKU != null && 
+		$neighborItem.serviceSKU == "Y" )  from $neighborItem
+then
+	filteredSet.remove($neighborItem);
+    LogUtil.debug(new Object(), "********** Rule Fired : Filter Neighbor Item - Service Item: Item=" + 
+    	$neighborItem.getPartNumber()+" ServiceSKU=" + $neighborItem.getServiceSKU());
+    drools.halt();
+end
+*/
+/***** Filter Neighbor Item if EOL Date is within before cut-off date *****/
+/*
+rule "Filter Neighbor Item - EOL Date"
+    salience 20 
+when
+	RecommendationFact ($cutoffDate : cutoffDate)
+	RecommendationFact ($neighborItem : neighborItem)
+	NeighborItem ($neighborItem.eolAnnounceDate != null && 
+		$neighborItem.eolAnnounceDate.before($cutoffDate) ) from $neighborItem
+then
+	filteredSet.remove($neighborItem);
+    LogUtil.debug(new Object(), "********** Rule Fired : Filter Neighbor Item - EOL Date: Item=" + 
+    	$neighborItem.getPartNumber()+" EolAnnounceDate=" + $neighborItem.getEolAnnounceDate());
+    drools.halt();
+end
+*/
